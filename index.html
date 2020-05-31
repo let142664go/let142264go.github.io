@@ -23,14 +23,18 @@
         var canvasNoShader = document.getElementById('canvasNoShader');
         var ctxNoShader = canvasNoShader.getContext('2d');
         var video = document.getElementById('video');
+        var width;
+        var height;
 
         // set canvas size = video size when known
         // set canvasNoShader size = video size when known
         video.addEventListener('loadedmetadata', function () {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvasNoShader.width = video.videoWidth;
-            canvasNoShader.height = video.videoHeight;
+            width = video.videoWidth;
+            height = video.videoHeight;
+            canvas.width = width;
+            canvas.height = height;
+            canvasNoShader.width = width;
+            canvasNoShader.height = height;
         });
 
         video.addEventListener('play', function () {
