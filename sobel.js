@@ -1,5 +1,4 @@
-// export class
-(function (root) {
+(function(root) {
   'use strict';
 
   function Sobel(imageData) {
@@ -7,35 +6,32 @@
       return new Sobel(imageData);
     }
 
-    var img = new ImageData(imageData.videoWidth, imageData.videoHeight);
-    img.data.set(imageData);
-
-    var width = img.width;
-    var height = img.height;
+    var width = imageData.width;
+    var height = imageData.height;
 
     var kernelX = [
-      [-1, 0, 1],
-      [-2, 0, 2],
-      [-1, 0, 1]
+      [-1,0,1],
+      [-2,0,2],
+      [-1,0,1]
     ];
 
     var kernelY = [
-      [-1, -2, -1],
-      [0, 0, 0],
-      [1, 2, 1]
+      [-1,-2,-1],
+      [0,0,0],
+      [1,2,1]
     ];
 
     var sobelData = [];
     var grayscaleData = [];
 
     function bindPixelAt(data) {
-      return function (x, y, i) {
+      return function(x, y, i) {
         i = i || 0;
         return data[((width * y) + x) * 4 + i];
       };
     }
 
-    var data = img.data;
+    var data = imageData.data;
     var pixelAt = bindPixelAt(data);
     var x, y;
 
@@ -55,15 +51,15 @@
     for (y = 0; y < height; y++) {
       for (x = 0; x < width; x++) {
         var pixelX = (
-          (kernelX[0][0] * pixelAt(x - 1, y - 1)) +
-          (kernelX[0][1] * pixelAt(x, y - 1)) +
-          (kernelX[0][2] * pixelAt(x + 1, y - 1)) +
-          (kernelX[1][0] * pixelAt(x - 1, y)) +
-          (kernelX[1][1] * pixelAt(x, y)) +
-          (kernelX[1][2] * pixelAt(x + 1, y)) +
-          (kernelX[2][0] * pixelAt(x - 1, y + 1)) +
-          (kernelX[2][1] * pixelAt(x, y + 1)) +
-          (kernelX[2][2] * pixelAt(x + 1, y + 1))
+            (kernelX[0][0] * pixelAt(x - 1, y - 1)) +
+            (kernelX[0][1] * pixelAt(x, y - 1)) +
+            (kernelX[0][2] * pixelAt(x + 1, y - 1)) +
+            (kernelX[1][0] * pixelAt(x - 1, y)) +
+            (kernelX[1][1] * pixelAt(x, y)) +
+            (kernelX[1][2] * pixelAt(x + 1, y)) +
+            (kernelX[2][0] * pixelAt(x - 1, y + 1)) +
+            (kernelX[2][1] * pixelAt(x, y + 1)) +
+            (kernelX[2][2] * pixelAt(x + 1, y + 1))
         );
 
         var pixelY = (
@@ -78,7 +74,7 @@
           (kernelY[2][2] * pixelAt(x + 1, y + 1))
         );
 
-        var magnitude = Math.sqrt((pixelX * pixelX) + (pixelY * pixelY)) >>> 0;
+        var magnitude = Math.sqrt((pixelX * pixelX) + (pixelY * pixelY))>>>0;
 
         sobelData.push(magnitude, magnitude, magnitude, 255);
       }
@@ -90,7 +86,7 @@
       clampedArray = new Uint8ClampedArray(sobelData);
     }
 
-    clampedArray.toImageData = function () {
+    clampedArray.toImageData = function() {
       return Sobel.toImageData(clampedArray, width, height);
     };
 
@@ -102,7 +98,7 @@
       return new ImageData(data, width, height);
     } else {
       if (typeof window === 'object' && typeof window.document === 'object') {
-        var canvas = document.createElement('canvasNoShader');
+        var canvas = document.createElement('canvas');
 
         if (typeof canvas.getContext === 'function') {
           var context = canvas.getContext('2d');
@@ -119,9 +115,11 @@
   };
 
   function FakeImageData(data, width, height) {
-    var result = new ImageData(width, height);
-    result.data.set(data);
-    return result;
+    return {
+      width: width,
+      height: height,
+      data: data
+    };
   }
 
   if (typeof exports !== 'undefined') {
@@ -130,7 +128,7 @@
     }
     exports.Sobel = Sobel;
   } else if (typeof define === 'function' && define.amd) {
-    define([], function () {
+    define([], function() {
       return Sobel;
     });
   } else {
